@@ -67,7 +67,7 @@ export function ApxdTreasuryControls() {
       await ensureBase();
       const options = asset === 'APXD'
         ? { address: APXD_ADDRESS, symbol: 'APXD', decimals: APXD_DECIMALS, image: `${window.location.origin}/apex-icon.png` }
-        : { address: USDT_ADDRESS, symbol: 'USDT', decimals: 6, image: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png' };
+        : { address: USDT_ADDRESS, symbol: 'USDT', decimals: 6, image: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/tether/default.svg' };
       const added = await ethereum.request({ method: 'wallet_watchAsset', params: { type: 'ERC20', options } });
       toast({ title: `${asset} wallet`, description: added === false ? `${asset} was not added to MetaMask.` : `${asset} and its logo were added to MetaMask.` });
     } catch (error) {
