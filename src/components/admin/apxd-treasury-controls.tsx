@@ -9,6 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { APXD_ABI, APXD_ADDRESS, APXD_CHAIN_ID, APXD_CHAIN_NAME, APXD_DECIMALS, APXD_EXPLORER_URL, APXD_RPC_URL, APXD_TREASURY_ADDRESS, isApxdConfigured } from '@/config/apxd';
 import { USDT_ADDRESS, USDT_CHAIN_ID, USDT_CHAIN_NAME, USDT_EXPLORER_URL, USDT_RPC_URL } from '@/config/usdt';
 
+const USDT_WATCH_IMAGE = 'https://assets.coingecko.com/coins/images/325/small/Tether.png';
+
 interface ApxdEthereumProvider { request(args: { method: string; params?: unknown[] | Record<string, unknown> }): Promise<unknown>; }
 
 export function ApxdTreasuryControls() {
@@ -67,7 +69,7 @@ export function ApxdTreasuryControls() {
       await ensureBase();
       const options = asset === 'APXD'
         ? { address: APXD_ADDRESS, symbol: 'APXD', decimals: APXD_DECIMALS, image: `${window.location.origin}/apex-icon.png` }
-        : { address: USDT_ADDRESS, symbol: 'USDT', decimals: 6, image: 'https://cdn.jsdelivr.net/gh/glincker/thesvg@main/public/icons/tether/default.svg' };
+        : { address: USDT_ADDRESS, symbol: 'USDT', decimals: 6, image: USDT_WATCH_IMAGE };
       const added = await ethereum.request({ method: 'wallet_watchAsset', params: { type: 'ERC20', options } });
       toast({ title: `${asset} wallet`, description: added === false ? `${asset} was not added to MetaMask.` : `${asset} and its logo were added to MetaMask.` });
     } catch (error) {
@@ -82,7 +84,7 @@ export function ApxdTreasuryControls() {
       <div className="space-y-1.5"><Label htmlFor="apxd-amount" className="text-xs text-white/55">Amount APXD</Label><Input id="apxd-amount" type="number" min="0" step="any" value={amount} onChange={(event) => setAmount(event.target.value)} placeholder="0.00" className="bg-white/[0.04] border-white/[0.08]" /></div>
     </div>
     <div className="flex flex-wrap gap-2"><Button onClick={() => void sendTransaction('mint')} disabled={busy || !recipient || !amount}>{busy ? 'Waiting for MetaMask…' : 'Mint APXD'}</Button><Button variant="outline" onClick={() => void sendTransaction('transfer')} disabled={busy || !recipient || !amount}>Transfer APXD</Button></div>
-    <div className="flex flex-wrap items-center gap-2 border-t border-white/[0.08] pt-3"><p className="mr-1 text-xs text-white/55">Watch wallet:</p><Button type="button" variant="outline" size="sm" onClick={() => void watchToken('APXD')}><img src="/apex-icon.png" alt="" className="mr-2 h-4 w-4 rounded-full" />Add APXD</Button><Button type="button" variant="outline" size="sm" onClick={() => void watchToken('USDT')}><img src="https://cryptologos.cc/logos/tether-usdt-logo.png?v=040" alt="" className="mr-2 h-4 w-4 rounded-full" />Add USDT</Button></div>
+    <div className="flex flex-wrap items-center gap-2 border-t border-white/[0.08] pt-3"><p className="mr-1 text-xs text-white/55">Watch wallet:</p><Button type="button" variant="outline" size="sm" onClick={() => void watchToken('APXD')}><img src="/apex-icon.png" alt="" className="mr-2 h-4 w-4 rounded-full" />Add APXD</Button><Button type="button" variant="outline" size="sm" onClick={() => void watchToken('USDT')}><img src={USDT_WATCH_IMAGE} alt="" className="mr-2 h-4 w-4 rounded-full" />Add USDT</Button></div>
     {!configured && <p className="text-xs text-amber-300/80">Deployment required: set <code>NEXT_PUBLIC_APXD_TOKEN_ADDRESS</code> after deploying <code>contracts/ApexDollar.sol</code> on Base.</p>}
   {configured && !APXD_TREASURY_ADDRESS && <p className="text-xs text-amber-300/80">Set <code>NEXT_PUBLIC_APXD_TREASURY_ADDRESS</code> to the existing wallet that controls minting. Mint sends to the configured treasury; transfers use the connected treasury signer.</p>}
   </section>;
