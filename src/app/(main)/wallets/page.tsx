@@ -29,6 +29,7 @@ import { useWallet } from '@/context/wallet-context';
 import { useFirestore, useCollection, useMemoFirebase } from '@/firebase';
 import { collection, query, orderBy, limit } from 'firebase/firestore';
 import { useLivePrices } from '@/hooks/use-live-prices';
+import { useLiveApxdBalance } from '@/hooks/use-live-apxd-balance';
 import { useCurrency } from '@/context/currency-context';
 import { CryptoIcon } from '@/components/crypto-icon';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -82,6 +83,7 @@ export default function MyWalletsPage() {
   const [isLiveUsdtLoading, setIsLiveUsdtLoading] = React.useState(false);
   const [liveApxdBalance, setLiveApxdBalance] = React.useState<number | null>(null);
   const [liveApxdError, setLiveApxdError] = React.useState<string | null>(null);
+  const { balance: walletApxdBalance, error: walletApxdError } = useLiveApxdBalance(wallet?.address);
 
   const refreshLiveApxdBalance = React.useCallback(async (account: string) => {
     if (!window.ethereum || !isApxdConfigured() || !ethers.isAddress(account)) return;
@@ -126,6 +128,10 @@ export default function MyWalletsPage() {
 
   React.useEffect(() => {
     if (!metamaskAccount || !window.ethereum) return;
+    if (!wallet || metamaskAccount.toLowerCase() !== wallet.address.toLowerCase()) {
+      setLiveUsdtBalance(null);
+      return;
+    }
     void refreshLiveUsdtBalance(metamaskAccount);
     void refreshLiveApxdBalance(metamaskAccount);
     const handleAccountsChanged = (accounts: unknown) => {
@@ -142,7 +148,6 @@ export default function MyWalletsPage() {
     window.ethereum.on?.('accountsChanged', handleAccountsChanged);
     window.ethereum.on?.('chainChanged', handleChainChanged);
     const interval = window.setInterval(() => {
-      setLiveApxdBalance(null);
       void refreshLiveUsdtBalance(metamaskAccount);
       void refreshLiveApxdBalance(metamaskAccount);
     }, 15000);
@@ -151,7 +156,7 @@ export default function MyWalletsPage() {
       window.ethereum?.removeListener?.('chainChanged', handleChainChanged);
       window.clearInterval(interval);
     };
-  }, [metamaskAccount, refreshLiveUsdtBalance, refreshLiveApxdBalance]);
+  }, [metamaskAccount, refreshLiveUsdtBalance, refreshLiveApxdBalance, wallet]);
 
   const connectMetamask = async () => {
     setWatchAssetMessage(null);
@@ -226,7 +231,13 @@ export default function MyWalletsPage() {
 
   const addTokenToMetamask = async () => {
     setWatchAssetMessage(null);
-    if (!metamaskAccount && !(await connectMetamask())) return;
+    const account = metamaskAccount || await connectMetamask();
+    if (!account) return;
+    if (!wallet || account.toLowerCase() !== wallet.address.toLowerCase()) {
+      setWatchAssetMessage('Connect the exact Apex wallet address before adding USDT.');
+      setLiveUsdtBalance(null);
+      return;
+    }
     if (!window.ethereum) {
       setWatchAssetMessage('MetaMask is not installed in this browser.');
       return;
@@ -277,7 +288,7 @@ export default function MyWalletsPage() {
       const change24h = changes[walletDoc.currency] ?? 0;
       const isUsdt = walletDoc.currency.toUpperCase() === 'USDT';
       const isApxd = walletDoc.currency.toUpperCase() === 'APXD';
-      const amount = isUsdt && liveUsdtBalance !== null ? liveUsdtBalance : isApxd && liveApxdBalance !== null ? liveApxdBalance : walletDoc.balance;
+      const amount = isUsdt && liveUsdtBalance !== null ? liveUsdtBalance : isApxd && walletApxdBalance !== null ? walletApxdBalance : isApxd && liveApxdBalance !== null ? liveApxdBalance : walletDoc.balance;
       return {
         symbol: walletDoc.currency,
         name: walletDoc.currency,
@@ -288,7 +299,7 @@ export default function MyWalletsPage() {
         icon: '',
       };
     });
-  }, [walletData, prices, changes, liveUsdtBalance, liveApxdBalance]);
+  }, [walletData, prices, changes, liveUsdtBalance, liveApxdBalance, walletApxdBalance]);
 
   const sortedAssets = React.useMemo(
     () => [...assets].sort((a, b) => b.valueUSD - a.valueUSD),
@@ -365,9 +376,9 @@ export default function MyWalletsPage() {
             </div>
           </div>
         </div>
-        {asset.symbol.toUpperCase() === 'APXD' && (watchAssetMessage || liveApxdError || liveApxdBalance !== null) && (
+        {asset.symbol.toUpperCase() === 'APXD' && (watchAssetMessage || walletApxdError || liveApxdError || walletApxdBalance !== null) && (
           <p role="status" className="mt-3 text-xs text-white/50">
-            {watchAssetMessage || liveApxdError || `Live APXD balance on ${APXD_CHAIN_NAME}: ${liveApxdBalance?.toFixed(6)}`}
+            {watchAssetMessage || walletApxdError || liveApxdError || (walletApxdBalance !== null ? `Live APXD balance on ${APXD_CHAIN_NAME}: ${walletApxdBalance.toFixed(6)}` : `Live APXD balance on ${APXD_CHAIN_NAME}: ${liveApxdBalance?.toFixed(6)}`)}
           </p>
         )}
         {asset.symbol.toUpperCase() === 'USDT' && (watchAssetMessage || liveUsdtError || isLiveUsdtLoading || metamaskAccount) && (
@@ -512,16 +523,15 @@ export default function MyWalletsPage() {
                     <div className="flex items-center gap-3">
                         <Skeleton className="w-9 h-9 rounded-full" />
                         <div className="space-y-2">
-                           <Skeleton className="h-4 w-20" />
-                            <Skeleton className="h-3 w-10" />
-                         </div>
-                       </div>
-                       <div className="space-y-2 text-right">
-                         <Skeleton className="h-4 w-24" />
-                         <Skeleton className="h-3 w-12 ml-auto" />
-                       </div>
-                  </div>
-                  <div className="mt-5 pt-5 border-t border-white/[0.05] space-y-3">
+                           <Skeleton className="h-3 w-10" />
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-right">
+                        <Skeleton className="h-4 w-24" />
+                        <Skeleton className="h-3 w-12 ml-auto" />
+                      </div>
+                 </div>
+                 <div className="mt-5 pt-5 border-t border-white/[0.05] space-y-3">
                       <Skeleton className="h-4 w-32" />
                       <div className="grid grid-cols-4 gap-2">
                          <Skeleton className="h-16 rounded-xl" />
