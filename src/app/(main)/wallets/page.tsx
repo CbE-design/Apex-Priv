@@ -252,7 +252,7 @@ export default function MyWalletsPage() {
             address: USDT_ADDRESS,
             symbol: 'USDT',
             decimals: 6,
-            image: 'https://cryptologos.cc/logos/tether-usdt-logo.png?v=040',
+            image: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
           },
         },
       });
