@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { APXD_ABI, APXD_ADDRESS, APXD_CHAIN_ID, APXD_CHAIN_NAME, APXD_DECIMALS, APXD_EXPLORER_URL, APXD_RPC_URL, APXD_TREASURY_ADDRESS, isApxdConfigured } from '@/config/apxd';
 import { USDT_ADDRESS, USDT_CHAIN_ID, USDT_CHAIN_NAME, USDT_EXPLORER_URL, USDT_RPC_URL } from '@/config/usdt';
 
-const USDT_WATCH_IMAGE = 'https://assets.coingecko.com/coins/images/325/small/Tether.png';
+const USDT_WATCH_IMAGE = 'https://i.ibb.co/q3YSy25C/download.png';
 
 interface ApxdEthereumProvider { request(args: { method: string; params?: unknown[] | Record<string, unknown> }): Promise<unknown>; }
 
