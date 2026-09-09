@@ -8,8 +8,7 @@ import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import { APXD_ABI, APXD_ADDRESS, APXD_CHAIN_ID, APXD_CHAIN_NAME, APXD_DECIMALS, APXD_EXPLORER_URL, APXD_RPC_URL, isApxdConfigured } from '@/config/apxd';
 import { USDT_ABI, USDT_ADDRESS, USDT_CHAIN_ID, USDT_CHAIN_NAME, USDT_EXPLORER_URL, USDT_RPC_URL } from '@/config/usdt';
-
-const USDT_LOGO_URL = 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/base/assets/0x27078CcA4f878f0FFAa4c6972478Ea7bd9B0b82d/logo.png';
+const USDT_LOGO_URL = 'https://assets.coingecko.com/coins/images/325/large/Tether.png';
 
 const tokens = {
   APXD: { address: APXD_ADDRESS, abi: APXD_ABI, decimals: APXD_DECIMALS, chainId: APXD_CHAIN_ID, chainName: APXD_CHAIN_NAME, rpc: APXD_RPC_URL, explorer: APXD_EXPLORER_URL, image: undefined },
