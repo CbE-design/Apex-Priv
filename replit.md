@@ -52,6 +52,7 @@ Set these in Replit Secrets:
 | `EXCHANGE_API_SECRET` | Crypto exchange API secret |
 | `EXCHANGE_SANDBOX_MODE` | Set to `true` for sandbox/testing mode |
 
+<<<<<<< HEAD
 ## Legal & Compliance Features
 
 South Africa-specific regulatory compliance throughout the app:
@@ -101,6 +102,8 @@ All Firestore queries that combine `where` + `orderBy` sort client-side to avoid
 - `users` — fetched as flat collection, sorted by `createdAt` desc in JS
 - `withdrawal_requests` per user — fetched with `where('userId')` only, sorted by `createdAt` desc in JS
 
+=======
+>>>>>>> refs/remotes/origin/main
 ## Replit Configuration
 
 - Port: **5000** (required for Replit webview)

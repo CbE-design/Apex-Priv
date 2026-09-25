@@ -31,6 +31,11 @@ const allKnownCoins = [...staticAssets, ...marketCoins].reduce<Array<{ symbol: s
   return acc;
 }, []);
 
+const allKnownCoins = [...staticAssets, ...marketCoins].reduce<Array<{ symbol: string; name: string }>>((acc, c) => {
+  if (!acc.find(x => x.symbol === c.symbol)) acc.push({ symbol: c.symbol, name: c.name });
+  return acc;
+}, []);
+
 const chartConfig = {
   value: { label: 'Value' },
   ...Object.fromEntries(
@@ -45,6 +50,12 @@ export function PortfolioOverview() {
   const { user } = useUser();
   const firestore = useFirestore();
   const { currency, formatCurrency } = useCurrency();
+<<<<<<< HEAD
+=======
+  const [livePrices, setLivePrices] = React.useState<Record<string, number>>({});
+  const [liveChanges, setLiveChanges] = React.useState<Record<string, number>>({});
+  const [isPriceLoading, setIsPriceLoading] = React.useState(true);
+>>>>>>> refs/remotes/origin/main
 
   const walletsQuery = useMemoFirebase(() => {
     if (!user || !firestore) return null;
@@ -58,7 +69,39 @@ export function PortfolioOverview() {
     return walletData.map(w => w.currency);
   }, [walletData]);
 
+<<<<<<< HEAD
   const { prices, changes, isLoading: isPriceLoading, error: priceError } = useLivePrices(portfolioSymbols);
+=======
+  React.useEffect(() => {
+    async function fetchPrices() {
+      if (portfolioSymbols.length === 0) {
+        setIsPriceLoading(false);
+        return;
+      }
+      setIsPriceLoading(prev => prev && Object.keys(livePrices).length === 0);
+      try {
+        const res = await fetch(
+          `/api/prices?symbols=${portfolioSymbols.join(',')}&currency=USD`,
+          { cache: 'no-store' },
+        );
+        if (!res.ok) throw new Error('price fetch failed');
+        const { prices, changes } = await res.json() as {
+          prices: Record<string, number>;
+          changes: Record<string, number>;
+        };
+        setLivePrices(prices);
+        setLiveChanges(changes);
+      } catch {
+        // Keep existing prices on error
+      } finally {
+        setIsPriceLoading(false);
+      }
+    }
+    fetchPrices();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [portfolioSymbols]);
+
+>>>>>>> refs/remotes/origin/main
 
   const portfolioAssets: PortfolioAsset[] = React.useMemo(() => {
     if (!walletData) return [];
@@ -69,20 +112,34 @@ export function PortfolioOverview() {
 
       const marketData = marketCoins.find(m => m.symbol === walletDoc.currency);
       const priceUSD = livePriceUSD !== undefined ? livePriceUSD : (staticAssetData?.priceUSD || marketData?.priceUSD || 0);
+<<<<<<< HEAD
       const change24h = changes[walletDoc.currency] ?? staticAssetData?.change24h ?? marketData?.change24h ?? 0;
+=======
+      const change24h = liveChanges[walletDoc.currency] ?? staticAssetData?.change24h ?? marketData?.change24h ?? 0;
+      const balance = walletDoc.balance ?? 0;
+>>>>>>> refs/remotes/origin/main
 
       return {
         symbol: walletDoc.currency,
         name: staticAssetData?.name || marketData?.name || walletDoc.currency,
+<<<<<<< HEAD
         amount: walletDoc.balance,
         valueUSD: walletDoc.balance * priceUSD,
+=======
+        amount: balance,
+        valueUSD: balance * priceUSD,
+>>>>>>> refs/remotes/origin/main
         priceUSD,
         change24h,
         icon: staticAssetData?.icon || marketData?.icon || '',
       };
     }).filter(Boolean) as PortfolioAsset[];
 
+<<<<<<< HEAD
   }, [walletData, prices, changes]);
+=======
+  }, [walletData, livePrices, liveChanges]);
+>>>>>>> refs/remotes/origin/main
 
 
   const totalBalance = portfolioAssets.reduce(
@@ -132,6 +189,7 @@ export function PortfolioOverview() {
 
   return (
     <Card className="bg-card/50 backdrop-blur-sm overflow-hidden relative border-border/60">
+<<<<<<< HEAD
       {priceError && (
         <div className="absolute top-4 right-4 z-20">
           <div className="p-2 bg-destructive/10 rounded-full">
@@ -139,15 +197,21 @@ export function PortfolioOverview() {
           </div>
         </div>
       )}
+=======
+>>>>>>> refs/remotes/origin/main
       <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
           <Wallet className="h-32 w-32" />
       </div>
       <CardHeader>
         <div className="flex items-center gap-2 mb-1">
+<<<<<<< HEAD
             <div className={cn(
                 "h-2 w-2 rounded-full",
                 priceError ? "bg-destructive" : "bg-accent animate-pulse"
             )} />
+=======
+            <div className="h-2 w-2 rounded-full bg-accent animate-pulse" />
+>>>>>>> refs/remotes/origin/main
             <CardTitle className="text-xl font-bold">Net Worth</CardTitle>
         </div>
         <CardDescription className="text-sm text-muted-foreground">
@@ -173,7 +237,11 @@ export function PortfolioOverview() {
                                   <div className="w-full">
                                       <div className="flex items-center justify-between gap-4">
                                         <span className="font-semibold">{asset.name}</span>
+<<<<<<< HEAD
                                         <span className={cn("font-bold", priceError ? "text-destructive" : "text-accent")}>{formatCurrency(asset.valueUSD * currency.rate)}</span>
+=======
+                                        <span className="font-bold text-accent">{formatCurrency(asset.valueUSD * currency.rate)}</span>
+>>>>>>> refs/remotes/origin/main
                                       </div>
                                   </div>
                                 )
@@ -203,7 +271,11 @@ export function PortfolioOverview() {
           {totalBalance > 0 && (
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center pointer-events-none space-y-0">
               <p className="text-xs font-semibold text-primary mb-1">Total Assets</p>
+<<<<<<< HEAD
               <p className={cn("text-4xl font-bold tracking-tight text-foreground", priceError && "text-destructive")}>
+=======
+              <p className="text-4xl font-bold tracking-tight text-foreground">
+>>>>>>> refs/remotes/origin/main
                 {formatCurrency(totalBalanceInSelectedCurrency).split('.')[0]}
                 <span className="text-xl opacity-50">.{formatCurrency(totalBalanceInSelectedCurrency).split('.')[1]}</span>
               </p>
@@ -225,19 +297,34 @@ export function PortfolioOverview() {
                 <CryptoIcon name={asset.name} className="h-8 w-8 transition-transform group-hover:scale-105" />
                 <div>
                     <span className="block font-semibold text-sm">{asset.name}</span>
+<<<<<<< HEAD
                     <span className="text-xs font-mono text-muted-foreground">{(asset.amount ?? 0).toFixed(asset.symbol === 'BTC' ? 6 : 4)} {asset.symbol}</span>
                 </div>
               </div>
               <div className="text-right">
                 <p className={cn("font-semibold text-sm", priceError && "text-muted-foreground")}>
+=======
+                    <span className="text-xs font-mono text-muted-foreground">{asset.amount.toFixed(asset.symbol === 'BTC' ? 6 : 4)} {asset.symbol}</span>
+                </div>
+              </div>
+              <div className="text-right">
+                <p className="font-semibold text-sm">
+>>>>>>> refs/remotes/origin/main
                   {formatCurrency(asset.valueUSD * currency.rate)}
                 </p>
                 <div className={cn(
                     "flex items-center justify-end gap-0.5 text-xs font-medium",
+<<<<<<< HEAD
                     priceError ? "text-muted-foreground/80" : (asset.change24h ?? 0) >= 0 ? "text-accent" : "text-red-400"
                 )}>
                     <TrendingUp className={cn("h-2.5 w-2.5", (asset.change24h ?? 0) < 0 && "rotate-180")} />
                     {Math.abs(asset.change24h ?? 0).toFixed(2)}%
+=======
+                    asset.change24h >= 0 ? "text-accent" : "text-red-400"
+                )}>
+                    <TrendingUp className={cn("h-2.5 w-2.5", asset.change24h < 0 && "rotate-180")} />
+                    {Math.abs(asset.change24h).toFixed(2)}%
+>>>>>>> refs/remotes/origin/main
                 </div>
               </div>
             </div>

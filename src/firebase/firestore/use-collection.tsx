@@ -74,6 +74,7 @@ export function useCollection<T = any>(
         setIsLoading(false);
       },
       (err: FirestoreError) => {
+<<<<<<< HEAD
         // Always stop the spinner first — even if path resolution fails below.
         setData(null);
         setIsLoading(false);
@@ -87,6 +88,12 @@ export function useCollection<T = any>(
         } catch {
           // Private Firebase internals changed — safe to ignore; path stays 'unknown'.
         }
+=======
+        const path: string =
+          memoizedTargetRefOrQuery.type === 'collection'
+            ? (memoizedTargetRefOrQuery as CollectionReference).path
+            : (memoizedTargetRefOrQuery as unknown as InternalQuery)._query.path.canonicalString();
+>>>>>>> refs/remotes/origin/main
 
         const contextualError = new FirestorePermissionError({
           operation: 'list',
@@ -94,6 +101,7 @@ export function useCollection<T = any>(
         });
 
         setError(contextualError);
+<<<<<<< HEAD
 
         // Only surface as a permission error for real access denials.
         // Other codes (failed-precondition = missing index, unavailable = offline, etc.)
@@ -103,6 +111,12 @@ export function useCollection<T = any>(
         } else {
           console.warn('[Firestore] Query error:', err.code, path, err.message);
         }
+=======
+        setData(null);
+        setIsLoading(false);
+
+        errorEmitter.emit('permission-error', contextualError);
+>>>>>>> refs/remotes/origin/main
       }
     );
 

@@ -4,16 +4,25 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useWallet } from '@/context/wallet-context';
+<<<<<<< HEAD
 import { useAuth } from '@/firebase';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import {
   Loader2, Shield, Key, AlertTriangle, ArrowRight,
   Eye, EyeOff, Copy, CheckCircle2, Lock, Mail,
+=======
+import {
+  Loader2, Shield, Key, AlertTriangle, ArrowRight,
+  Eye, EyeOff, Copy, CheckCircle2,
+>>>>>>> refs/remotes/origin/main
 } from 'lucide-react';
 import React, { useState } from 'react';
 import { EyeWatermark } from '@/components/eye-watermark';
 import { Textarea } from '@/components/ui/textarea';
+<<<<<<< HEAD
 import { Input } from '@/components/ui/input';
+=======
+>>>>>>> refs/remotes/origin/main
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle,
   DialogDescription, DialogFooter,
@@ -26,9 +35,14 @@ import { PinUnlockScreen } from '@/components/pin-unlock-screen';
 export default function ConnectWalletPage() {
   const router       = useRouter();
   const { toast }    = useToast();
+<<<<<<< HEAD
   const auth         = useAuth();
   const {
     createWallet, importWallet, loading, user, isAdmin, confirmAndCreateWallet,
+=======
+  const {
+    createWallet, importWallet, loading, user, confirmAndCreateWallet,
+>>>>>>> refs/remotes/origin/main
     vaultLocked, pendingVaultSetup, hasPasskey, passkeySupported, addressHint,
     setupVault, unlockWithPin, setupPasskey, unlockWithPasskey, disconnectWallet, wallet,
   } = useWallet();
@@ -41,6 +55,7 @@ export default function ConnectWalletPage() {
   const [copied,                 setCopied]                 = useState(false);
   const [pinSetupOpen,           setPinSetupOpen]           = useState(false);
 
+<<<<<<< HEAD
   // Admin sign-in state
   const [showAdminLogin,  setShowAdminLogin]  = useState(false);
   const [adminEmail,      setAdminEmail]      = useState('');
@@ -48,11 +63,14 @@ export default function ConnectWalletPage() {
   const [adminPwVisible,  setAdminPwVisible]  = useState(false);
   const [adminLoading,    setAdminLoading]    = useState(false);
 
+=======
+>>>>>>> refs/remotes/origin/main
   // Open PIN setup dialog as soon as wallet is pending vault
   React.useEffect(() => {
     if (pendingVaultSetup) setPinSetupOpen(true);
   }, [pendingVaultSetup]);
 
+<<<<<<< HEAD
   // Redirect once wallet is unlocked and ready, BUT not while the PIN setup
   // dialog is still open (passkey choice step would otherwise vanish in a flash).
   React.useEffect(() => {
@@ -68,6 +86,15 @@ export default function ConnectWalletPage() {
     }
   }, [user, isAdmin, wallet, router]);
 
+=======
+  // Redirect once wallet is unlocked and ready
+  React.useEffect(() => {
+    if (user && wallet && !vaultLocked && !pendingVaultSetup) {
+      router.push('/');
+    }
+  }, [user, wallet, vaultLocked, pendingVaultSetup, router]);
+
+>>>>>>> refs/remotes/origin/main
   // ── handlers ─────────────────────────────────────────────────────────
   const handleCreateWallet = async () => {
     try {
@@ -111,6 +138,7 @@ export default function ConnectWalletPage() {
     await unlockWithPasskey();
   };
 
+<<<<<<< HEAD
   const handleAdminSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!adminEmail.trim() || !adminPassword.trim()) return;
@@ -133,6 +161,8 @@ export default function ConnectWalletPage() {
     }
   };
 
+=======
+>>>>>>> refs/remotes/origin/main
   const copyMnemonic = () => {
     navigator.clipboard.writeText(newMnemonic);
     setCopied(true);
@@ -275,6 +305,7 @@ export default function ConnectWalletPage() {
               <span>End-to-end encrypted</span>
             </div>
           </div>
+<<<<<<< HEAD
 
           {/* T&C acceptance notice */}
           <p className="text-center text-[10px] text-muted-foreground/40 mt-4 max-w-xs mx-auto leading-relaxed">
@@ -378,6 +409,8 @@ export default function ConnectWalletPage() {
               </div>
             )}
           </div>
+=======
+>>>>>>> refs/remotes/origin/main
         </div>
       </div>
 

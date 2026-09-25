@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 import { NormalModuleReplacementPlugin } from 'webpack';
 
 const nextConfig = {
+=======
+import type {NextConfig} from 'next';
+
+const nextConfig: NextConfig = {
+>>>>>>> refs/remotes/origin/main
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -24,6 +30,7 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+<<<<<<< HEAD
       {
         protocol: 'https',
         hostname: 'flagcdn.com',
@@ -33,6 +40,10 @@ const nextConfig = {
     ],
   },
   transpilePackages: [],
+=======
+    ],
+  },
+>>>>>>> refs/remotes/origin/main
   allowedDevOrigins: [
     "*.replit.dev",
     "*.kirk.replit.dev",
@@ -66,6 +77,7 @@ const nextConfig = {
       ],
     },
   },
+<<<<<<< HEAD
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.plugins.push(
@@ -78,6 +90,8 @@ const nextConfig = {
 
     return config;
   },
+=======
+>>>>>>> refs/remotes/origin/main
 };
 
 export default nextConfig;

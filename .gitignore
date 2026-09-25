@@ -1,5 +1,9 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# v0 runtime files
+__v0_runtime_loader.js
+__v0_devtools.tsx
+__v0_jsx-dev-runtime.ts
 
+<<<<<<< HEAD
 # dependencies
 /node_modules
 /.pnp
@@ -44,3 +48,10 @@ next-env.d.ts
 firebase-debug.log
 firestore-debug.log
 firebase-service-account.json
+=======
+# Common ignores
+node_modules
+.next/
+.env*.local
+.DS_Store
+>>>>>>> refs/remotes/origin/main

@@ -18,10 +18,13 @@ import {
   Wallet,
   ShieldCheck,
   ArrowRightLeft,
+<<<<<<< HEAD
   Scale,
   ChevronUp,
   ChevronDown,
   ExternalLink,
+=======
+>>>>>>> refs/remotes/origin/main
 } from "lucide-react";
 import { useWallet } from "@/context/wallet-context";
 import Link from "next/link";
@@ -37,6 +40,7 @@ const mainNav = [
   { href: "/cash-out",     label: "Withdrawal",   icon: Banknote,        desc: "Withdraw funds"  },
   { href: "/ai-assistant", label: "AI Assistant", icon: Bot,             desc: "Ask anything"    },
 ];
+<<<<<<< HEAD
 
 const legalLinks = [
   { href: '/legal/terms',           label: 'Terms of Service',     desc: 'User agreement & platform rules' },
@@ -50,6 +54,12 @@ export function AppSidebar() {
   const pathname = usePathname();
   const [legalOpen, setLegalOpen] = React.useState(false);
 
+=======
+
+export function AppSidebar() {
+  const { isAdmin, wallet, user } = useWallet();
+  const pathname = usePathname();
+>>>>>>> refs/remotes/origin/main
   const truncatedAddress = wallet?.address
     ? `${wallet.address.slice(0, 6)}···${wallet.address.slice(-4)}`
     : null;
@@ -65,6 +75,10 @@ export function AppSidebar() {
               alt="Apex Wallet"
               className="h-9 w-9 rounded-xl shadow-lg shadow-primary/30 object-cover"
             />
+<<<<<<< HEAD
+=======
+            {/* Live dot */}
+>>>>>>> refs/remotes/origin/main
             <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-accent border-2 border-sidebar" />
           </div>
           <div className="group-data-[collapsible=icon]:hidden">
@@ -135,11 +149,18 @@ export function AppSidebar() {
 
       {/* ── Footer ── */}
       <SidebarFooter className="p-2 border-t border-sidebar-border/60 relative overflow-hidden">
+<<<<<<< HEAD
+=======
+        {/* Subliminal eye watermark */}
+>>>>>>> refs/remotes/origin/main
         <EyeWatermark
           className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-28 h-28 text-primary pointer-events-none group-data-[collapsible=icon]:opacity-0 transition-opacity"
           opacity={0.07}
         />
+<<<<<<< HEAD
 
+=======
+>>>>>>> refs/remotes/origin/main
         {/* Wallet address strip */}
         {truncatedAddress && (
           <div className="group-data-[collapsible=icon]:hidden mb-2 px-3 py-2.5 rounded-xl bg-sidebar-accent/40 border border-sidebar-border/50">
@@ -152,8 +173,12 @@ export function AppSidebar() {
           </div>
         )}
 
+<<<<<<< HEAD
         <SidebarMenu className="gap-0.5">
           {/* Settings */}
+=======
+        <SidebarMenu>
+>>>>>>> refs/remotes/origin/main
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild

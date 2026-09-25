@@ -120,6 +120,7 @@ export interface Currency {
     symbol: string;
     name: string;
     flag?: string;
+<<<<<<< HEAD
     flagUrl: string;
 }
 
@@ -209,4 +210,6 @@ export interface KYCSubmission {
     currency: string;
     method: 'EFT' | 'SWIFT';
   } | null;
+=======
+>>>>>>> refs/remotes/origin/main
 }

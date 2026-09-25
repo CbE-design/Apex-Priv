@@ -1,5 +1,9 @@
 import type { Metadata } from 'next';
+<<<<<<< HEAD
 import { Inter, Roboto_Mono, Space_Grotesk } from 'next/font/google';
+=======
+import { Inter } from 'next/font/google';
+>>>>>>> refs/remotes/origin/main
 import './globals.css';
 import { cn } from '@/lib/utils';
 import { Providers } from './providers';
@@ -10,6 +14,7 @@ const inter = Inter({
   variable: '--font-inter',
   display: 'swap',
 });
+<<<<<<< HEAD
 
 const roboto_mono = Roboto_Mono({
   subsets: ['latin'],
@@ -22,6 +27,8 @@ const space_grotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
   display: 'swap',
 });
+=======
+>>>>>>> refs/remotes/origin/main
 
 export const metadata: Metadata = {
   title: 'Apex Crypto Wallet',
@@ -43,8 +50,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+<<<<<<< HEAD
     <html lang="en" className={cn('h-full', inter.variable, roboto_mono.variable, space_grotesk.variable)} suppressHydrationWarning>
       <body className={cn('font-body antialiased h-full', inter.className)}>
+=======
+    <html lang="en" className={cn('h-full', inter.variable)} suppressHydrationWarning>
+      <head suppressHydrationWarning>
+        <link rel="manifest" href="/manifest.json" />
+      </head>
+      <body className={cn('font-body antialiased h-full')}>
+>>>>>>> refs/remotes/origin/main
         <Providers>
           <ClientShell>
             {children}

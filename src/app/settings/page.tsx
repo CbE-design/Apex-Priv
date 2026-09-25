@@ -3,7 +3,11 @@
 import { useTheme } from 'next-themes';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+<<<<<<< HEAD
 import { Moon, Sun, Globe, Shield, Bell, Smartphone, User, ChevronRight, Lock, Eye, EyeOff, Fingerprint, Scale, ExternalLink, Clock, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
+=======
+import { Moon, Sun, Globe, Shield, Bell, Smartphone, User, ChevronRight, Lock, Eye, Fingerprint } from 'lucide-react';
+>>>>>>> refs/remotes/origin/main
 import { PrivateRoute } from '@/components/private-route';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -15,25 +19,36 @@ import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+<<<<<<< HEAD
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePrivacyMode } from '@/hooks/use-privacy-mode';
 import { KYCVerificationModal } from '@/components/kyc-verification-modal';
 import type { KYCStatus } from '@/lib/types';
+=======
+>>>>>>> refs/remotes/origin/main
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const { currency, setCurrency } = useCurrency();
+<<<<<<< HEAD
   const { wallet, userProfile } = useWallet();
   const { toast } = useToast();
   const [notifications, setNotifications] = useState(true);
   const [priceAlerts, setPriceAlerts] = useState(true);
   const { privacyMode, togglePrivacyMode } = usePrivacyMode();
   const [kycModalOpen, setKycModalOpen] = useState(false);
+=======
+  const { wallet } = useWallet();
+  const { toast } = useToast();
+  const [notifications, setNotifications] = useState(true);
+  const [priceAlerts, setPriceAlerts] = useState(true);
+>>>>>>> refs/remotes/origin/main
 
   const truncatedAddress = wallet?.address
     ? `${wallet.address.slice(0, 10)}···${wallet.address.slice(-6)}`
     : '—';
+<<<<<<< HEAD
 
   const kycStatus: KYCStatus = (userProfile as any)?.kycStatus ?? 'NOT_SUBMITTED';
 
@@ -58,6 +73,8 @@ export default function SettingsPage() {
       default: return 'Required for withdrawals — tap to verify';
     }
   };
+=======
+>>>>>>> refs/remotes/origin/main
 
   return (
     <PrivateRoute>
@@ -81,6 +98,7 @@ export default function SettingsPage() {
                 Active
               </Badge>
             </div>
+<<<<<<< HEAD
 
             {/* KYC Row — fully dynamic, opens modal */}
             <button
@@ -118,6 +136,20 @@ export default function SettingsPage() {
                 )}
               </div>
             </button>
+=======
+            <div className="flex items-center justify-between px-5 py-4">
+              <div className="flex items-center gap-3">
+                <div className="h-8 w-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center">
+                  <Shield className="h-4 w-4 text-accent" />
+                </div>
+                <div>
+                  <p className="text-[13px] font-medium">KYC Status</p>
+                  <p className="text-[11px] text-muted-foreground">Identity verified</p>
+                </div>
+              </div>
+              <Badge className="text-[10px] bg-accent/10 text-accent border-accent/20 rounded-lg">Verified</Badge>
+            </div>
+>>>>>>> refs/remotes/origin/main
           </Card>
         </section>
 
@@ -171,6 +203,7 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <Select value={currency.symbol} onValueChange={setCurrency}>
+<<<<<<< HEAD
                   <SelectTrigger className="w-40 h-10 rounded-xl bg-muted/30 border-border/60 text-[13px]">
                     <div className="flex items-center gap-2">
                       <div className="relative h-3 w-4.5 overflow-hidden rounded-sm border border-white/10 shrink-0">
@@ -188,6 +221,15 @@ export default function SettingsPage() {
                           </div>
                           <span>{c.symbol} — {c.name}</span>
                         </div>
+=======
+                  <SelectTrigger className="w-36 h-9 rounded-xl bg-muted/30 border-border/60 text-[13px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-56">
+                    {currencies.map(c => (
+                      <SelectItem key={c.symbol} value={c.symbol} className="text-[13px]">
+                        <span className="mr-1.5">{c.flag}</span> {c.symbol} — {c.name}
+>>>>>>> refs/remotes/origin/main
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -237,6 +279,7 @@ export default function SettingsPage() {
         <section>
           <h2 className="text-[11px] uppercase tracking-widest font-semibold text-muted-foreground mb-3 px-1">Security</h2>
           <Card className="rounded-2xl border-border/60 bg-card/60 backdrop-blur overflow-hidden divide-y divide-border/40">
+<<<<<<< HEAD
 
             <div className="flex items-center justify-between px-5 py-4">
               <div className="flex items-center gap-3">
@@ -303,18 +346,39 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-3">
                   <div className="h-8 w-8 rounded-lg bg-muted/50 border border-border/60 flex items-center justify-center">
                     <Scale className="h-4 w-4 text-muted-foreground" />
+=======
+            {[
+              { icon: Lock,        label: 'Change PIN',       desc: 'Update your 6-digit security PIN' },
+              { icon: Eye,         label: 'Privacy Mode',     desc: 'Hide balances in the interface'   },
+              { icon: Fingerprint, label: 'Biometric Auth',   desc: 'Use fingerprint or face ID'       },
+            ].map(({ icon: Icon, label, desc }) => (
+              <button
+                key={label}
+                className="w-full flex items-center justify-between px-5 py-4 hover:bg-muted/20 transition-colors text-left"
+                onClick={() => toast({ title: `${label}`, description: 'This feature is coming soon.' })}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-lg bg-muted/50 border border-border/60 flex items-center justify-center">
+                    <Icon className="h-4 w-4 text-muted-foreground" />
+>>>>>>> refs/remotes/origin/main
                   </div>
                   <div>
                     <p className="text-[13px] font-medium">{label}</p>
                     <p className="text-[11px] text-muted-foreground">{desc}</p>
                   </div>
                 </div>
+<<<<<<< HEAD
                 <ExternalLink className="h-3.5 w-3.5 text-muted-foreground/40" />
               </Link>
+=======
+                <ChevronRight className="h-4 w-4 text-muted-foreground/40" />
+              </button>
+>>>>>>> refs/remotes/origin/main
             ))}
           </Card>
         </section>
 
+<<<<<<< HEAD
         {/* Regulatory Notice */}
         <div className="p-4 rounded-xl bg-muted/20 border border-border/40 space-y-1.5">
           <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Regulatory Information</p>
@@ -325,6 +389,11 @@ export default function SettingsPage() {
 
         <p className="text-center text-[11px] text-muted-foreground/40 pb-4">
           Apex Wallet v2.0.0 · Mainnet · Build 2026.03 · FICA Compliant
+=======
+        {/* Version */}
+        <p className="text-center text-[11px] text-muted-foreground/40 pb-4">
+          Apex Wallet v2.0.0 · Mainnet · Build 2026.03
+>>>>>>> refs/remotes/origin/main
         </p>
       </div>
 
