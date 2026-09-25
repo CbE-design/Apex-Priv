@@ -16,7 +16,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { ArrowRight, Copy, Loader2, ShieldCheck, Send, ArrowDownToLine, QrCode } from 'lucide-react';
-import { RiskDisclaimer } from '@/components/risk-disclaimer';
 import { CryptoIcon } from '@/components/crypto-icon';
 import { useWallet } from '@/context/wallet-context';
 import Image from 'next/image';
@@ -67,7 +66,7 @@ export default function SendReceivePage() {
   const selectedAssetBalance = useMemo(() => {
     if (!userWallets) return 0;
     const w = userWallets.find(w => w.currency === selectedAsset);
-    return w ? w.balance : 0;
+    return w?.balance ?? 0;
   }, [userWallets, selectedAsset]);
 
   const { 
@@ -186,9 +185,7 @@ export default function SendReceivePage() {
   return (
     <PrivateRoute>
       <div className="flex justify-center items-start pt-2">
-        <div className="w-full max-w-lg space-y-4">
-        <RiskDisclaimer variant="transfer" collapsible />
-        <Card className="bg-card/60 backdrop-blur-sm border-border/60">
+        <Card className="w-full max-w-lg bg-card/60 backdrop-blur-sm border-border/60">
           <CardHeader className="border-b border-border/40 pb-5">
             <div className="flex items-center gap-3">
                  <div className="p-2.5 bg-primary/10 rounded-xl border border-primary/20">
@@ -196,7 +193,7 @@ export default function SendReceivePage() {
                 </div>
                 <div>
                   <CardTitle className="text-xl font-bold tracking-tight">Send & Receive</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">Transfer crypto to any Apex wallet</CardDescription>
+                  <CardDescription className="text-sm text-muted-foreground">Send crypto securely to an Apex wallet</CardDescription>
                 </div>
             </div>
           </CardHeader>
@@ -228,7 +225,7 @@ export default function SendReceivePage() {
                     </div>
 
                     <div className="space-y-2">
-                        <Label className="text-xs font-medium text-muted-foreground">Recipient Address</Label>
+                        <Label className="text-xs font-medium text-muted-foreground">Destination Wallet Address</Label>
                         <Input className="h-12 bg-muted/20 border-border/60 rounded-xl font-mono text-sm" placeholder="0x..." {...register('recipientAddress')} />
                         {errors.recipientAddress && <p className="text-xs text-destructive">{errors.recipientAddress.message}</p>}
                     </div>
@@ -240,7 +237,7 @@ export default function SendReceivePage() {
                             <div className="absolute right-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-primary">{selectedAsset}</div>
                         </div>
                         <p className="text-xs text-muted-foreground mt-1">
-                            Available: <span className="text-foreground font-medium">{(selectedAssetBalance ?? 0).toFixed(6)} {selectedAsset}</span>
+                            Available: <span className="text-foreground font-medium">{selectedAssetBalance.toFixed(6)} {selectedAsset}</span>
                         </p>
                         {errors.amount && <p className="text-xs text-destructive">{errors.amount.message}</p>}
                     </div>
@@ -267,7 +264,7 @@ export default function SendReceivePage() {
                             <AlertDialogHeader>
                                 <AlertDialogTitle className="text-lg font-bold">Confirm Transfer</AlertDialogTitle>
                                 <AlertDialogDescription className="text-sm">
-                                    Please review the details below. This transfer cannot be reversed.
+                                    Review the destination and amount before authorizing this wallet transfer. Transfers cannot be reversed.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <div className="py-4 space-y-3">

@@ -72,12 +72,7 @@ export function useDoc<T = any>(
         setData(null);
         setIsLoading(false);
 
-        // Only surface as a permission error for real access denials.
-        if (err.code === 'permission-denied') {
-          errorEmitter.emit('permission-error', contextualError);
-        } else {
-          console.warn('[Firestore] Doc error:', err.code, memoizedDocRef.path, err.message);
-        }
+        errorEmitter.emit('permission-error', contextualError);
       }
     );
 

@@ -1,6 +1,6 @@
-import { NormalModuleReplacementPlugin } from 'webpack';
+import type {NextConfig} from 'next';
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -24,15 +24,8 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
-      {
-        protocol: 'https',
-        hostname: 'flagcdn.com',
-        port: '',
-        pathname: '/**',
-      },
     ],
   },
-  transpilePackages: [],
   allowedDevOrigins: [
     "*.replit.dev",
     "*.kirk.replit.dev",
@@ -65,18 +58,6 @@ const nextConfig = {
         ...(process.env.REPLIT_DEV_DOMAIN ? [process.env.REPLIT_DEV_DOMAIN] : []),
       ],
     },
-  },
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.plugins.push(
-        new NormalModuleReplacementPlugin(
-          /firebase\/functions/,
-          './empty-module.js'
-        )
-      );
-    }
-
-    return config;
   },
 };
 

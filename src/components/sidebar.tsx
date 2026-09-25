@@ -18,10 +18,6 @@ import {
   Wallet,
   ShieldCheck,
   ArrowRightLeft,
-  Scale,
-  ChevronUp,
-  ChevronDown,
-  ExternalLink,
 } from "lucide-react";
 import { useWallet } from "@/context/wallet-context";
 import Link from "next/link";
@@ -38,18 +34,9 @@ const mainNav = [
   { href: "/ai-assistant", label: "AI Assistant", icon: Bot,             desc: "Ask anything"    },
 ];
 
-const legalLinks = [
-  { href: '/legal/terms',           label: 'Terms of Service',     desc: 'User agreement & platform rules' },
-  { href: '/legal/privacy',         label: 'Privacy Policy',       desc: 'POPIA-compliant data handling'   },
-  { href: '/legal/risk-disclosure', label: 'Risk Disclosure',      desc: 'Investment & crypto risks'       },
-  { href: '/legal/aml-policy',      label: 'AML & FICA Policy',   desc: 'Compliance & KYC framework'      },
-];
-
 export function AppSidebar() {
-  const { isAdmin, wallet } = useWallet();
+  const { isAdmin, wallet, user } = useWallet();
   const pathname = usePathname();
-  const [legalOpen, setLegalOpen] = React.useState(false);
-
   const truncatedAddress = wallet?.address
     ? `${wallet.address.slice(0, 6)}···${wallet.address.slice(-4)}`
     : null;
@@ -65,6 +52,7 @@ export function AppSidebar() {
               alt="Apex Wallet"
               className="h-9 w-9 rounded-xl shadow-lg shadow-primary/30 object-cover"
             />
+            {/* Live dot */}
             <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-accent border-2 border-sidebar" />
           </div>
           <div className="group-data-[collapsible=icon]:hidden">
@@ -135,11 +123,11 @@ export function AppSidebar() {
 
       {/* ── Footer ── */}
       <SidebarFooter className="p-2 border-t border-sidebar-border/60 relative overflow-hidden">
+        {/* Subliminal eye watermark */}
         <EyeWatermark
           className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-28 h-28 text-primary pointer-events-none group-data-[collapsible=icon]:opacity-0 transition-opacity"
           opacity={0.07}
         />
-
         {/* Wallet address strip */}
         {truncatedAddress && (
           <div className="group-data-[collapsible=icon]:hidden mb-2 px-3 py-2.5 rounded-xl bg-sidebar-accent/40 border border-sidebar-border/50">
@@ -152,8 +140,7 @@ export function AppSidebar() {
           </div>
         )}
 
-        <SidebarMenu className="gap-0.5">
-          {/* Settings */}
+        <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
               asChild

@@ -68,7 +68,7 @@ export default function SwapPage() {
   const fromAssetBalance = useMemo(() => {
     if (!userWallets) return 0;
     const assetWallet = userWallets.find(w => w.currency === fromAsset);
-    return assetWallet ? assetWallet.balance : 0;
+    return assetWallet?.balance ?? 0;
   }, [userWallets, fromAsset]);
 
 
@@ -281,7 +281,7 @@ export default function SwapPage() {
                 />
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-                Balance: <span className="font-medium text-foreground">{(fromAssetBalance ?? 0).toFixed(4)}</span>
+                Balance: <span className="font-medium text-foreground">{fromAssetBalance.toFixed(4)}</span>
             </p>
         </div>
         
@@ -325,7 +325,7 @@ export default function SwapPage() {
         <div className="text-sm text-muted-foreground text-center h-5 flex items-center justify-center">
             {isLoadingRate && <Loader2 className="h-4 w-4 animate-spin" />}
             {!isLoadingRate && exchangeRate !== null && exchangeRate > 0 && fromAsset !== toAsset && (
-              <span className="font-medium">1 {fromAsset} ≈ {(exchangeRate ?? 0).toFixed(5)} {toAsset}</span>
+              <span className="font-medium">1 {fromAsset} ≈ {exchangeRate.toFixed(5)} {toAsset}</span>
             )}
             {!isLoadingRate && exchangeRate === 0 && <span className="text-destructive text-xs">Could not fetch rate</span>}
         </div>
@@ -373,31 +373,22 @@ export default function SwapPage() {
   return (
     <PrivateRoute>
       <div className="flex justify-center items-start pt-4">
-        <div className="w-full max-w-md space-y-4">
-          <RiskDisclaimer variant="trading" collapsible />
-          <Card className="bg-card/60 backdrop-blur-sm border-border/60">
-            <CardHeader className="border-b border-border/40 pb-5">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-primary/10 rounded-xl border border-primary/20">
-                  <ArrowLeftRight className="h-5 w-5 text-primary" />
-                </div>
-                <div>
-                  <CardTitle className="text-xl font-bold">Swap</CardTitle>
-                  <CardDescription className="text-sm">Exchange one cryptocurrency for another</CardDescription>
-                </div>
+        <Card className="w-full max-w-md bg-card/60 backdrop-blur-sm border-border/60">
+          <CardHeader className="border-b border-border/40 pb-5">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 bg-primary/10 rounded-xl border border-primary/20">
+                <ArrowLeftRight className="h-5 w-5 text-primary" />
               </div>
-            </CardHeader>
-            <CardContent className="pt-6">
-              {status === 'idle' ? renderSwapForm() : getStatusContent()}
-            </CardContent>
-          </Card>
-          <p className="text-[10px] text-center text-muted-foreground/40 px-2">
-            By confirming a swap you acknowledge our{' '}
-            <a href="/legal/risk-disclosure" className="underline hover:text-muted-foreground transition-colors">Risk Disclosure</a> and{' '}
-            <a href="/legal/terms" className="underline hover:text-muted-foreground transition-colors">Terms of Service</a>.
-            Swaps are final and irreversible. Not financial advice.
-          </p>
-        </div>
+              <div>
+                <CardTitle className="text-xl font-bold">Swap</CardTitle>
+                <CardDescription className="text-sm">Exchange one cryptocurrency for another</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            {status === 'idle' ? renderSwapForm() : getStatusContent()}
+          </CardContent>
+        </Card>
       </div>
     </PrivateRoute>
   );

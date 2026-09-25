@@ -1,6 +1,6 @@
 
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Card,
   CardContent,
@@ -15,46 +15,66 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { marketCoins as staticMarketCoins } from "@/lib/data";
-import { CryptoIcon } from "../crypto-icon";
-import { cn } from "@/lib/utils";
-import { ArrowDown, ArrowUp, TrendingUp, AlertTriangle } from "lucide-react";
-import { useCurrency } from "@/context/currency-context";
+} from "@/components/ui/table"
+import { marketCoins as staticMarketCoins } from "@/lib/data"
+import { CryptoIcon } from "../crypto-icon"
+import { cn } from "@/lib/utils"
+import { ArrowDown, ArrowUp, TrendingUp } from "lucide-react"
+import { useCurrency } from "@/context/currency-context"
 import type { MarketCoin } from '@/lib/types';
 import { Skeleton } from '../ui/skeleton';
 import { useLivePrices } from '@/hooks/use-live-prices';
 
 const marketSymbols = staticMarketCoins.map(c => c.symbol);
 
+const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
+
 export function MarketOverview() {
   const { currency, formatCurrency } = useCurrency();
+  const [marketData, setMarketData] = useState<MarketCoin[]>(staticMarketCoins);
+  const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const { prices, changes, isLoading, error } = useLivePrices(marketSymbols);
+  const fetchMarketData = async () => {
+    const symbols = staticMarketCoins.map(c => c.symbol);
+    try {
+      const res = await fetch(
+        `/api/prices?symbols=${symbols.join(',')}&currency=${currency.symbol}`,
+        { cache: 'no-store' },
+      );
+      if (!res.ok) throw new Error('price fetch failed');
+      const { prices, changes } = await res.json() as {
+        prices: Record<string, number>;
+        changes: Record<string, number>;
+      };
+
+      setMarketData(staticMarketCoins.map(coin => ({
+        ...coin,
+        priceUSD: prices[coin.symbol] ?? coin.priceUSD * currency.rate,
+        change24h: changes[coin.symbol] ?? coin.change24h,
+      })));
+      setLastUpdated(new Date());
+    } catch {
+      setMarketData(staticMarketCoins.map(coin => ({
+        ...coin,
+        priceUSD: coin.priceUSD * currency.rate,
+      })));
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!isLoading && !error) {
-      setLastUpdated(new Date());
-    }
-  }, [isLoading, error]);
+    setIsLoading(true);
+    fetchMarketData();
 
-
-  const marketData: MarketCoin[] = useMemo(() => {
-      return staticMarketCoins.map(coin => {
-        const livePrice = prices[coin.symbol];
-        const liveChange = changes[coin.symbol];
-        
-        // The API returns prices in USD, so we need to convert to the selected currency
-        const priceInSelectedCurrency = (livePrice ?? coin.priceUSD) * currency.rate;
-
-        return {
-          ...coin,
-          priceUSD: priceInSelectedCurrency,
-          change24h: liveChange ?? coin.change24h,
-        }
-      });
-  }, [prices, changes, currency.rate]);
+    intervalRef.current = setInterval(fetchMarketData, REFRESH_INTERVAL);
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currency.symbol]);
 
   const renderSkeleton = () =>
     [...Array(6)].map((_, i) => (
@@ -81,19 +101,12 @@ export function MarketOverview() {
             <TrendingUp className="h-4 w-4 text-accent" />
             Market Overview
           </CardTitle>
-          <CardDescription className={cn(error && 'text-destructive')}>
-            {error
-              ? 'Price update failed'
-              : lastUpdated
+          <CardDescription>
+            {lastUpdated
               ? `Updated ${lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
               : 'Live prices from global markets'}
           </CardDescription>
         </div>
-        {error && (
-            <div className="p-2 bg-destructive/10 rounded-full">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-            </div>
-        )}
       </CardHeader>
       <CardContent className="px-0">
         <div className="max-h-96 overflow-auto scroll-container">
@@ -106,7 +119,7 @@ export function MarketOverview() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {isLoading && marketData.every(c => c.priceUSD === 0) ? renderSkeleton() : marketData.map((coin) => (
+              {isLoading ? renderSkeleton() : marketData.map((coin) => (
                 <TableRow key={coin.symbol} className="hover:bg-white/5 transition-colors">
                   <TableCell>
                     <div className="flex items-center gap-3">
@@ -117,18 +130,18 @@ export function MarketOverview() {
                       </div>
                     </div>
                   </TableCell>
-                  <TableCell className={cn("text-right font-semibold tabular-nums", error && 'text-muted-foreground/70')}>
+                  <TableCell className="text-right font-semibold tabular-nums">
                     {formatCurrency(coin.priceUSD)}
                   </TableCell>
                   <TableCell className="text-right">
                     <span className={cn(
                       "inline-flex items-center justify-end gap-1 text-sm font-semibold",
-                      error ? 'text-muted-foreground/70' : coin.change24h >= 0 ? "text-green-400" : "text-red-400"
+                      coin.change24h >= 0 ? "text-green-400" : "text-red-400"
                     )}>
                       {coin.change24h >= 0
                         ? <ArrowUp className="h-3 w-3" />
                         : <ArrowDown className="h-3 w-3" />}
-                      {Math.abs(coin.change24h ?? 0).toFixed(2)}%
+                      {Math.abs(coin.change24h).toFixed(2)}%
                     </span>
                   </TableCell>
                 </TableRow>
