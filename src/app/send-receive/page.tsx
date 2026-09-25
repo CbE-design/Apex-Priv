@@ -193,7 +193,7 @@ export default function SendReceivePage() {
                 </div>
                 <div>
                   <CardTitle className="text-xl font-bold tracking-tight">Send & Receive</CardTitle>
-                  <CardDescription className="text-sm text-muted-foreground">Transfer crypto to any Apex wallet</CardDescription>
+                  <CardDescription className="text-sm text-muted-foreground">Send crypto securely to an Apex wallet</CardDescription>
                 </div>
             </div>
           </CardHeader>
@@ -225,7 +225,7 @@ export default function SendReceivePage() {
                     </div>
 
                     <div className="space-y-2">
-                        <Label className="text-xs font-medium text-muted-foreground">Recipient Address</Label>
+                        <Label className="text-xs font-medium text-muted-foreground">Destination Wallet Address</Label>
                         <Input className="h-12 bg-muted/20 border-border/60 rounded-xl font-mono text-sm" placeholder="0x..." {...register('recipientAddress')} />
                         {errors.recipientAddress && <p className="text-xs text-destructive">{errors.recipientAddress.message}</p>}
                     </div>
@@ -264,7 +264,7 @@ export default function SendReceivePage() {
                             <AlertDialogHeader>
                                 <AlertDialogTitle className="text-lg font-bold">Confirm Transfer</AlertDialogTitle>
                                 <AlertDialogDescription className="text-sm">
-                                    Please review the details below. This transfer cannot be reversed.
+                                    Review the destination and amount before authorizing this wallet transfer. Transfers cannot be reversed.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <div className="py-4 space-y-3">
