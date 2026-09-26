@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ethers } from 'ethers';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -25,6 +25,7 @@ export function BaseTreasuryControls() {
   const [amount, setAmount] = useState('');
   const [asset, setAsset] = useState<TokenSymbol>('USDT');
   const [busy, setBusy] = useState(false);
+  const isMobile = useMemo(() => /Android|iPhone|iPad|iPod/i.test(navigator.userAgent), []);
 
   const refresh = useCallback(async (address: string) => {
     if (!ethers.isAddress(address)) return;
@@ -40,10 +41,22 @@ export function BaseTreasuryControls() {
     setBalances(next);
   }, []);
 
+  const openMobileWallet = () => {
+    const dappUrl = `${window.location.host}${window.location.pathname}${window.location.search}`;
+    window.location.href = `https://metamask.app.link/dapp/${dappUrl}`;
+  };
+
   const connect = async () => {
-    if (!window.ethereum) { toast({ title: 'MetaMask required', description: 'Install MetaMask to connect the treasury wallet.', variant: 'destructive' }); return; }
+    if (!window.ethereum) {
+      if (isMobile) {
+        openMobileWallet();
+        return;
+      }
+      toast({ title: 'Wallet app required', description: 'Install MetaMask or another EVM wallet to connect the treasury signer.', variant: 'destructive' });
+      return;
+    }
     try {
-      await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: '0x2105' }] });
+      await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: `0x${APXD_CHAIN_ID.toString(16)}` }] });
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' }) as string[];
       const next = accounts?.[0] || '';
       setAccount(next);
@@ -54,7 +67,10 @@ export function BaseTreasuryControls() {
   useEffect(() => { if (account) void refresh(account); }, [account, refresh]);
 
   const watch = async (symbol: TokenSymbol) => {
-    if (!window.ethereum) return;
+    if (!window.ethereum) {
+      if (isMobile) openMobileWallet();
+      return;
+    }
     const token = tokens[symbol];
     const added = await window.ethereum.request({ method: 'wallet_watchAsset', params: { type: 'ERC20', options: { address: token.address, symbol, decimals: token.decimals, ...(token.image ? { image: token.image } : {}) } } });
     toast({ title: added ? `${symbol} added to MetaMask` : `${symbol} not added`, description: token.address });
@@ -79,8 +95,12 @@ export function BaseTreasuryControls() {
   };
 
   return <section className="rounded-2xl border border-cyan-500/15 bg-cyan-500/[0.03] p-5 space-y-4">
-    <div><p className="text-sm font-bold text-white">Base token treasury</p><p className="text-xs leading-5 text-white/45">Connect the treasury signer on Base, read live ERC-20 balances, add tokens to MetaMask, or send to an Apex or external wallet.</p></div>
-    <Button onClick={() => void connect()}>{account ? `${account.slice(0, 8)}…${account.slice(-6)}` : 'Connect treasury MetaMask'}</Button>
+    <div><p className="text-sm font-bold text-white">Apex token treasury</p><p className="text-xs leading-5 text-white/45">Connect the treasury signer, read live contract balances, add supported assets to your wallet, or send to an Apex or external wallet.</p></div>
+    <div className="flex flex-wrap items-center gap-2">
+      <Button onClick={() => void connect()}>{account ? `${account.slice(0, 8)}…${account.slice(-6)}` : 'Connect treasury wallet'}</Button>
+      {isMobile && !account && <Button type="button" variant="outline" onClick={openMobileWallet}>Open in MetaMask Mobile</Button>}
+    </div>
+    {isMobile && !account && <p className="text-[11px] leading-5 text-white/40">On mobile, open this page in MetaMask Mobile to approve the connection and view live contract balances.</p>}
     <div className="grid gap-3 sm:grid-cols-2">{(Object.keys(tokens) as TokenSymbol[]).map(symbol => <div key={symbol} className="rounded-xl border border-white/[0.08] p-3"><div className="flex items-center justify-between"><span className="font-bold text-white">{symbol}</span><Button size="sm" variant="outline" onClick={() => void watch(symbol)}>Watch asset</Button></div><p className="mt-2 font-mono text-sm text-white/70">{balances[symbol]}</p><p className="mt-1 break-all text-[10px] text-white/35">{tokens[symbol].address}</p></div>)}</div>
     <div className="grid gap-3 sm:grid-cols-[120px_1fr_160px_auto] sm:items-end"><div><Label className="text-xs text-white/55">Asset</Label><select value={asset} onChange={event => setAsset(event.target.value as TokenSymbol)} className="mt-1 h-10 w-full rounded-md border border-white/[0.08] bg-white/[0.04] px-3 text-sm text-white"><option value="USDT">USDT</option><option value="APXD" disabled={!isApxdConfigured()}>APXD</option></select></div><div><Label htmlFor="treasury-recipient" className="text-xs text-white/55">Recipient</Label><Input id="treasury-recipient" value={recipient} onChange={event => setRecipient(event.target.value)} placeholder="0x…" /></div><div><Label htmlFor="treasury-amount" className="text-xs text-white/55">Amount</Label><Input id="treasury-amount" value={amount} onChange={event => setAmount(event.target.value)} placeholder="0.00" /></div><Button onClick={() => void send()} disabled={busy || !account || !recipient || !amount}>{busy ? 'Confirming…' : 'Send on Base'}</Button></div>
   </section>;

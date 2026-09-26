@@ -238,7 +238,7 @@ export default function SendReceivePage() {
                       <div className="rounded-xl border border-violet-500/20 bg-violet-500/5 p-4 space-y-2">
                         <div className="flex items-center justify-between gap-3">
                           <div>
-                            <p className="text-[10px] uppercase tracking-widest font-semibold text-violet-300/70">External wallet transfer</p>
+                            <p className="text-[10px] uppercase tracking-widest font-semibold text-violet-300/70">External settlement transfer</p>
                             <p className="text-sm font-semibold text-white">APEX · verified settlement</p>
                           </div>
                         </div>
@@ -317,7 +317,7 @@ export default function SendReceivePage() {
                                 <AlertDialogTitle className="text-white font-bold">Confirm Transfer</AlertDialogTitle>
                             <AlertDialogDescription className="text-white/30">
                                     {destinationType === 'external'
-                                      ? 'This securely processes an external wallet transfer from the Apex settlement service. Transfers cannot be reversed.'
+                                      ? 'This securely processes an external wallet transfer through the Apex settlement service. Transfers cannot be reversed.'
                                       : 'Please review the details below. This transfer cannot be reversed.'}
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
