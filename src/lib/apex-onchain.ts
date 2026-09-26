@@ -10,7 +10,7 @@ import { ethers } from 'ethers';
 export const APEX_ASSET = 'APEX' as const;
 export const APEX_DECIMALS = 18;
 export const APEX_DEFAULT_CHAIN_ID = 11155111; // Sepolia default.
-export const APEX_DEFAULT_CHAIN_NAME = 'Sepolia';
+export const APEX_DEFAULT_CHAIN_NAME = 'Apex Settlement Network';
 export const APEX_DEFAULT_EXPLORER_URL = 'https://sepolia.etherscan.io';
 
 export const APEX_ERC20_ABI = [
