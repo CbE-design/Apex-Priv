@@ -22,7 +22,7 @@ export interface ApexServerConfig {
 }
 
 export function getApexServerConfig(): ApexServerConfig {
-  const rpcUrl = process.env.APEX_ONCHAIN_RPC_URL || process.env.SEPOLIA_RPC_URL || process.env.NEXT_PUBLIC_APEX_RPC_URL || '';
+  const rpcUrl = process.env.APEX_ONCHAIN_RPC_URL || process.env.NEXT_PUBLIC_APEX_RPC_URL || 'https://mainnet.base.org';
   const tokenAddress =
     process.env.APEX_ONCHAIN_TOKEN_ADDRESS ||
     process.env.APXD_TOKEN_CONTRACT_ADDRESS ||

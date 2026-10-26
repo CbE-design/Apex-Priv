@@ -9,9 +9,9 @@ import { ethers } from 'ethers';
  */
 export const APEX_ASSET = 'APEX' as const;
 export const APEX_DECIMALS = 18;
-export const APEX_DEFAULT_CHAIN_ID = 11155111; // Sepolia default.
-export const APEX_DEFAULT_CHAIN_NAME = 'Apex Settlement Network';
-export const APEX_DEFAULT_EXPLORER_URL = 'https://sepolia.etherscan.io';
+export const APEX_DEFAULT_CHAIN_ID = 8453; // Base Mainnet.
+export const APEX_DEFAULT_CHAIN_NAME = 'Base';
+export const APEX_DEFAULT_EXPLORER_URL = 'https://basescan.org';
 
 export const APEX_ERC20_ABI = [
   'function name() view returns (string)',
@@ -40,7 +40,7 @@ function normalizeExplorerUrl(value: string | undefined): string {
  */
 export function getApexOnchainConfig(): ApexOnchainConfig {
   const tokenAddress = process.env.NEXT_PUBLIC_APEX_TOKEN_ADDRESS || '';
-  const rpcUrl = process.env.NEXT_PUBLIC_APEX_RPC_URL || '';
+  const rpcUrl = process.env.NEXT_PUBLIC_APEX_RPC_URL || 'https://mainnet.base.org';
   const chainId = Number(process.env.NEXT_PUBLIC_APEX_CHAIN_ID || APEX_DEFAULT_CHAIN_ID);
   const chainName = process.env.NEXT_PUBLIC_APEX_CHAIN_NAME || APEX_DEFAULT_CHAIN_NAME;
   const explorerUrl = normalizeExplorerUrl(process.env.NEXT_PUBLIC_APEX_EXPLORER_URL);
